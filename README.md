@@ -311,3 +311,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute to thi
 ## License
 
 [MPL-2.0](./LICENSE)
+
+## Credits
+
+This SDK has been inspired by [Expo light sensor](https://docs.expo.dev/versions/latest/sdk/light-sensor/)
