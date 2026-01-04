@@ -1,20 +1,20 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
     "declaration": true,
-    "declarationMap": true,
-    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "inlineSources": true,
     "lib": ["dom", "es2017"],
-    "module": "ESNext",
+    "module": "esnext",
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "outDir": "dist/esm",
+    "pretty": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES2017"
+    "target": "es2017"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "files": ["src/index.ts"]
 }
