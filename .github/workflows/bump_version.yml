@@ -1,4 +1,4 @@
-name: Bump Version
+name: Bump version
 
 on:
   push:
@@ -10,55 +10,47 @@ on:
       - '.github/**'
 
 jobs:
+  # Run all tests first before creating any tags
   test:
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
     uses: ./.github/workflows/test.yml
 
+  # Only bump version and create tag if all tests pass
   bump-version:
-    needs: test
+    needs: [test]
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(release):') }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    name: "Bump version and create tag"
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
+          filter: blob:none
+          token: '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
       - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - run: bun install
-
-      - name: Check if should bump
-        id: check
+      - name: Install dependencies
+        id: install_code
+        run: bun i
+      - name: Git config
         run: |
-          if [[ "${{ github.event.head_commit.message }}" == chore\(release\):* ]]; then
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Update docs
-        if: steps.check.outputs.skip == 'false'
-        run: npm run docgen
-
-      - name: Commit doc changes
-        if: steps.check.outputs.skip == 'false'
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Update Doc
+        run: bun run docgen
+      - name: Add doc to github
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md dist/docs.json || true
-          git diff --staged --quiet || git commit -m "docs: update API documentation"
-
-      - name: Bump version (main)
-        if: steps.check.outputs.skip == 'false' && github.ref == 'refs/heads/main'
-        run: npx capacitor-plugin-standard-version
-
-      - name: Bump version (development)
-        if: steps.check.outputs.skip == 'false' && github.ref == 'refs/heads/development'
-        run: npx capacitor-plugin-standard-version --prerelease alpha
-
-      - name: Push changes
-        if: steps.check.outputs.skip == 'false'
-        run: git push --follow-tags origin ${{ github.ref_name }}
+          git add README.md
+          git commit --m "docs: update doc" || true
+      - name: Create version bump main
+        if: github.ref == 'refs/heads/main'
+        run: bunx capacitor-plugin-standard-version@latest --skip.changelog
+      - name: Create version bump development
+        if: github.ref != 'refs/heads/main'
+        run: bunx capacitor-plugin-standard-version@latest --prerelease alpha --skip.changelog
+      - name: Push to origin
+        run: |
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          remote_repo="https://${GITHUB_ACTOR}:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git"
+          git pull $remote_repo $CURRENT_BRANCH
+          git push $remote_repo HEAD:$CURRENT_BRANCH --follow-tags --tags

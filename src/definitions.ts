@@ -151,10 +151,7 @@ export interface LightSensorPlugin {
    * });
    * ```
    */
-  addListener(
-    eventName: 'lightSensorChange',
-    listenerFunc: LightSensorCallback,
-  ): Promise<PluginListenerHandle>;
+  addListener(eventName: 'lightSensorChange', listenerFunc: LightSensorCallback): Promise<PluginListenerHandle>;
 
   /**
    * Remove all listeners for light sensor events.

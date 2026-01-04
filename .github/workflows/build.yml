@@ -1,61 +1,65 @@
-name: Build & Deploy
-
-on:
-  push:
-    tags:
-      - '*'
+name: Build and publish
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+on:
+  push:
+    tags:
+      - "*"
+
 jobs:
+  # Tests already passed before tag was created, so just build and deploy
   deploy:
     runs-on: ubuntu-latest
+    name: "Build and publish to npm"
     permissions:
       contents: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
+          filter: blob:none
       - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - run: bun install
-
-      - run: npm run build
-
-      - name: Generate AI Changelog
+      - name: Install dependencies
+        id: install_code
+        run: bun i
+      - name: Build
+        id: build_code
+        run: bun run build
+      - name: Generate AI changelog
         id: changelog
         uses: mistricky/ccc@v0.2.3
         with:
-          model: 'claude-sonnet-4-20250514'
-          include: 'src/**,android/**,ios/**,package.json'
-          exclude: 'dist/**,node_modules/**,*.lock,bun.lockb'
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        continue-on-error: true
-
-      - name: Publish to NPM
-        if: "!contains(github.ref, 'alpha')"
-        uses: js-devtools/npm-publish@v4
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          model: claude-sonnet-4-5-20250929
+      - uses: js-devtools/npm-publish@v4
+        if: ${{ !contains(github.ref, '-alpha.') }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish Alpha to NPM
-        if: contains(github.ref, 'alpha')
-        uses: js-devtools/npm-publish@v4
+          provenance: true
+      - uses: js-devtools/npm-publish@v4
+        if: ${{ contains(github.ref, '-alpha.') }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           tag: next
-
-      - name: Create GitHub Release
+          provenance: true
+      - name: Create GitHub release
+        id: create_release
         uses: softprops/action-gh-release@v2
         with:
           body: |
-            ${{ steps.changelog.outputs.changelog || 'See commit history for changes.' }}
+            ## 🆕 Changelog
+            
+            ${{ steps.changelog.outputs.result }}
+            
+            ---
 
-            **Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}
-          prerelease: ${{ contains(github.ref, 'alpha') }}
+            🔗 **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ steps.changelog.outputs.from_tag }}...${{ steps.changelog.outputs.to_tag }}
+          make_latest: true
+          token: '${{ secrets.PERSONAL_ACCESS_TOKEN }}'
+          prerelease: ${{ contains(github.ref, '-alpha.') }}
