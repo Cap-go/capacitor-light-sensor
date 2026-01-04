@@ -14,7 +14,7 @@ public class CapgoLightSensorPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "getPluginVersion", returnType: CAPPluginReturnPromise)
     ]
 
-    private let pluginVersion = "0.0.1"
+    private let pluginVersion = "8.0.0"
 
     @objc func isAvailable(_ call: CAPPluginCall) {
         // Light sensor is not available on iOS - no public API
@@ -30,12 +30,12 @@ public class CapgoLightSensorPlugin: CAPPlugin, CAPBridgedPlugin {
         call.resolve()
     }
 
-    @objc func checkPermissions(_ call: CAPPluginCall) {
+    @objc override public func checkPermissions(_ call: CAPPluginCall) {
         // Always return granted since no permission is needed (sensor not available)
         call.resolve(["highSamplingRate": "granted"])
     }
 
-    @objc func requestPermissions(_ call: CAPPluginCall) {
+    @objc override public func requestPermissions(_ call: CAPPluginCall) {
         // Always return granted since no permission is needed (sensor not available)
         call.resolve(["highSamplingRate": "granted"])
     }

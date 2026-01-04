@@ -44,6 +44,6 @@ export class LightSensorWeb extends WebPlugin implements LightSensorPlugin {
   }
 
   async getPluginVersion(): Promise<VersionResult> {
-    return { version: '0.0.1' };
+    return { version: '8.0.0' };
   }
 }

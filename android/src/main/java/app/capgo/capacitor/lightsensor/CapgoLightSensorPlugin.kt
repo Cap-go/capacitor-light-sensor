@@ -16,7 +16,7 @@ import com.getcapacitor.annotation.CapacitorPlugin
 class CapgoLightSensorPlugin : Plugin(), SensorEventListener {
 
     companion object {
-        private const val PLUGIN_VERSION = "0.0.1"
+        private const val PLUGIN_VERSION = "8.0.0"
         private const val EVENT_LIGHT_SENSOR_CHANGE = "lightSensorChange"
         private const val DEFAULT_UPDATE_INTERVAL = 200000 // 200ms in microseconds
     }
@@ -77,7 +77,7 @@ class CapgoLightSensorPlugin : Plugin(), SensorEventListener {
     }
 
     @PluginMethod
-    fun checkPermissions(call: PluginCall) {
+    override fun checkPermissions(call: PluginCall) {
         val ret = JSObject()
         // HIGH_SAMPLING_RATE_SENSORS is a normal permission, granted at install time
         // if declared in manifest. For now, we assume it's granted.
@@ -86,7 +86,7 @@ class CapgoLightSensorPlugin : Plugin(), SensorEventListener {
     }
 
     @PluginMethod
-    fun requestPermissions(call: PluginCall) {
+    override fun requestPermissions(call: PluginCall) {
         // HIGH_SAMPLING_RATE_SENSORS is a normal permission, automatically granted
         // if declared in the manifest. No runtime request needed.
         val ret = JSObject()
