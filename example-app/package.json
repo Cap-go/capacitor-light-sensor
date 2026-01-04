@@ -1,0 +1,22 @@
+{
+  "name": "capacitor-light-sensor-example",
+  "description": "Example Capacitor app for @capgo/capacitor-light-sensor",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
+    "@capgo/capacitor-light-sensor": "file:../"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "vite": "^5.4.2"
+  }
+}

@@ -1,0 +1,24 @@
+name: Discord Release Notification
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send to Discord
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: "New Release: ${{ github.event.release.tag_name }}"
+          description: |
+            **${{ github.event.release.name }}**
+
+            ${{ github.event.release.body }}
+
+            [View Release](${{ github.event.release.html_url }})
+          color: 0x2105893
+          avatar_url: "https://raw.githubusercontent.com/Cap-go/capgo/main/public/icon.png"

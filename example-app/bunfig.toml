@@ -1,0 +1,3 @@
+[install]
+# Use isolated mode for better compatibility with capacitor plugins
+linker = "isolated"

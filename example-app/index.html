@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Light Sensor Example</title>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>💡 Light Sensor</h1>
+    <p class="subtitle">Capacitor Light Sensor Plugin Demo</p>
+
+    <div class="card">
+      <label for="action">Select Action</label>
+      <select id="action">
+        <option value="">-- Choose an action --</option>
+      </select>
+      <p id="actionDescription" class="description"></p>
+    </div>
+
+    <div id="formContainer" class="card"></div>
+
+    <button id="runBtn" disabled>Run Action</button>
+
+    <div class="card output-card">
+      <h3>Output</h3>
+      <pre id="output">Select an action to begin</pre>
+    </div>
+
+    <div id="liveReading" class="card live-card" style="display: none;">
+      <h3>Live Light Reading</h3>
+      <div class="lux-display">
+        <span id="luxValue">--</span>
+        <span class="lux-unit">lux</span>
+      </div>
+      <div id="luxBar" class="lux-bar">
+        <div id="luxBarFill" class="lux-bar-fill"></div>
+      </div>
+      <p id="luxDescription" class="description">Waiting for data...</p>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

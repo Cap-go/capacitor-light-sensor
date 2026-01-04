@@ -1,0 +1,61 @@
+name: Build & Deploy
+
+on:
+  push:
+    tags:
+      - '*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install
+
+      - run: npm run build
+
+      - name: Generate AI Changelog
+        id: changelog
+        uses: mistricky/ccc@v0.2.3
+        with:
+          model: 'claude-sonnet-4-20250514'
+          include: 'src/**,android/**,ios/**,package.json'
+          exclude: 'dist/**,node_modules/**,*.lock,bun.lockb'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        continue-on-error: true
+
+      - name: Publish to NPM
+        if: "!contains(github.ref, 'alpha')"
+        uses: js-devtools/npm-publish@v4
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Alpha to NPM
+        if: contains(github.ref, 'alpha')
+        uses: js-devtools/npm-publish@v4
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: next
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: |
+            ${{ steps.changelog.outputs.changelog || 'See commit history for changes.' }}
+
+            **Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref, 'alpha') }}
