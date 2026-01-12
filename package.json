@@ -1,6 +1,6 @@
 {
   "name": "@capgo/capacitor-light-sensor",
-  "version": "8.1.1",
+  "version": "8.1.2",
   "description": "Capacitor plugin for accessing the device light sensor (Android only)",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
