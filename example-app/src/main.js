@@ -1,3 +1,5 @@
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
+import { Capacitor } from '@capacitor/core';
 import { LightSensor } from '@capgo/capacitor-light-sensor';
 
 const actions = [
@@ -254,3 +256,9 @@ window.addEventListener('beforeunload', async () => {
     await removeListener();
   }
 });
+
+if (Capacitor.isNativePlatform()) {
+  CapacitorUpdater.notifyAppReady().catch((error) => {
+    console.error('Capgo notifyAppReady failed', error);
+  });
+}
