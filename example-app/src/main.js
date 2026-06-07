@@ -10,7 +10,7 @@ const actions = [
     inputs: [],
     run: async () => {
       return await LightSensor.isAvailable();
-    }
+    },
   },
   {
     id: 'checkPermissions',
@@ -19,7 +19,7 @@ const actions = [
     inputs: [],
     run: async () => {
       return await LightSensor.checkPermissions();
-    }
+    },
   },
   {
     id: 'requestPermissions',
@@ -28,19 +28,19 @@ const actions = [
     inputs: [],
     run: async () => {
       return await LightSensor.requestPermissions();
-    }
+    },
   },
   {
     id: 'startSensor',
     label: 'Start Sensor',
     description: 'Start listening to light sensor updates. Shows live readings.',
     inputs: [
-      { name: 'updateInterval', label: 'Update Interval (ms)', type: 'number', default: 200 }
+      { name: 'updateInterval', label: 'Update Interval (ms)', type: 'number', default: 200 },
     ],
     run: async (params) => {
       await LightSensor.start({ updateInterval: params.updateInterval });
       return { status: 'Sensor started', updateInterval: params.updateInterval };
-    }
+    },
   },
   {
     id: 'stopSensor',
@@ -50,7 +50,7 @@ const actions = [
     run: async () => {
       await LightSensor.stop();
       return { status: 'Sensor stopped' };
-    }
+    },
   },
   {
     id: 'getPluginVersion',
@@ -59,8 +59,8 @@ const actions = [
     inputs: [],
     run: async () => {
       return await LightSensor.getPluginVersion();
-    }
-  }
+    },
+  },
 ];
 
 const actionSelect = document.getElementById('action');
