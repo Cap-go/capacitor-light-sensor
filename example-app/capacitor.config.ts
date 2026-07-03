@@ -4,7 +4,7 @@ import pkg from './package.json';
 
 const config: CapacitorConfig = {
   appId: 'app.capgo.lightsensor',
-  appName: 'Light Sensor Example',
+  appName: '@capgo/capacitor-light-sensor',
   webDir: 'dist',
   plugins: {
     SplashScreen: {
