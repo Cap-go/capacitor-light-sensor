@@ -21,7 +21,7 @@ Read the ambient light level from the device sensor in your Capacitor app, to ad
 - **Sampling control**: pass an update interval to `start()`.
 - **Availability**: `isAvailable()` checks for a light sensor first.
 - **Stop**: `stop()` ends updates to save battery.
-- **Permissions**: `checkPermissions()` and `requestPermissions()` for high sampling rate sensors.
+- **Permissions**: `checkPermissions()` and `requestPermissions()` exist for API parity. Both always report `highSamplingRate` as granted.
 - **Platforms**: Android. Android only. iOS has no public ambient light sensor API, and web is not available.
 
 ## Why Capacitor Light Sensor?
